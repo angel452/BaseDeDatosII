@@ -80,6 +80,9 @@ CREATE CLUSTERED INDEX IDX_idLema1_RealSteams1 on RelStems1
 
 execute sp_helpindex 'RelStems1' --verificar todos los indices
 
+-- RANGE  PARTITIONI --
+sp_helpdb [Actividad05 - CorpusGoogle]
+
 -- CONSULTA MAIN 1 --
 IF OBJECT_ID('tempdb.dbo.#ResTableConsult', 'U') IS NOT NULL
   DROP TABLE #ResTableConsult; 
@@ -105,7 +108,7 @@ select * from #ResTableConsult
 select c1.raizRaicesTable, c2.raizRaicesTable, m.frecuencia_RealStems1
 from 
     RelStems1 m
-join raicesTable2 c1 on c1.idRaicesTable = m.idLema1_RealStems1 and c1.raizRaicesTable = 'god'
+join raicesTable2 c1 on c1.idRaicesTable = m.idLema1_RealStems1 and c1.raizRaicesTable = 'man'
 join raicesTable2 c2 on c2.idRaicesTable = m.idLema2_RealStems1 
 order by frecuencia_RealStems1 desc
 
