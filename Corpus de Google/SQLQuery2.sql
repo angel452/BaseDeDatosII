@@ -112,14 +112,6 @@ join raicesTable2 c1 on c1.idRaicesTable = m.idLema1_RealStems1 and c1.raizRaice
 join raicesTable2 c2 on c2.idRaicesTable = m.idLema2_RealStems1 
 order by frecuencia_RealStems1 desc
 
--- CONSULTA # de lemas --
-select count(*) 
-from raicesTable2
-
--- CONSULTA # de relaciones --
-select count(*) 
-from RelStems1
-
 -- TF - IDF - W
 --TF
 select 
@@ -192,11 +184,6 @@ from temp_ids s
 cross join temp_rel
 
 select
-	*
-from RelStems1
-where idLema1_RealStems1 = 10110
-
-select
 	temp_res2.idRaicesTable,
 	temp_res2.idLema2_RealStems1,
 	isnull(v.frecuencia_RealStems1,0)
@@ -207,3 +194,6 @@ left join ( select
 			where idLema1_RealStems1 = 10110) V
 on temp_res2.idLema2_RealStems1 = V.idLema2_RealStems1
 order by idLema2_RealStems1 asc
+
+-- CONSULTAS ADICIONALES
+select idRaicesTable from raicesTable2 where idRaicesTable > 20 and idRaicesTable <= 30
