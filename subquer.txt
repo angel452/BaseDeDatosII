@@ -1,0 +1,39 @@
+select sum(idLema1_RealStems1), sum(idLema2_RealStems1), sum(l.kw*l.pw)/(sqrt(sum(l.kw*l.kw))*sqrt(sum(l.pw*l.pw))) as cosine
+from 
+		RelStems1_Particionada_W as RP
+		join
+		(select top 283 sum(k1.W_ordenado) as kw,sum(p.W_ordenado) as pw
+		from (
+				select sub.idlema1, sub.idlema2, sub.w as W_ordenado from -- sum(sub.w) as W_ordenado from 
+				(select distinct coalesce( v.idLema1_RealStems1,k.idLema1_RealStems1 ) as idlema1,coalesce(v.idLema2_RealStems1,k.idLema2_RealStems1) as idlema2,coalesce(v.W,0) as w
+				from RelStems1_Particionada_W v
+				right join (select distinct idLema2_RealStems1 as idLema1_RealStems1, a.idLema2_RealStems1, 0 as W_a
+				from RelStems1_Particionada_W a
+				where a.idLema1_RealStems1 = idLema1_RealStems1) as k
+				on k.idLema1_RealStems1 = v.idLema1_RealStems1 
+				and k.idLema2_RealStems1 = v.idLema2_RealStems1
+				union all
+				select  * from RelStems1_Particionada_W r where r.idLema1_RealStems1 = idLema2_RealStems1) as sub
+				--group by sub.idlema1, sub.idlema2
+				--order by sub.idlema2
+				) as k1
+		join (
+				select sub.idlema1, sub.idlema2, sub.w as W_ordenado from --sum(sub.w) as W_ordenado from 
+				(select distinct coalesce( v.idLema1_RealStems1,k.idLema1_RealStems1 ) as idlema1,coalesce(v.idLema2_RealStems1,k.idLema2_RealStems1) as idlema2,coalesce(v.W,0) as w
+				from RelStems1_Particionada_W v
+				right join (select distinct idLema1_RealStems1 as idLema1_RealStems1, a.idLema2_RealStems1, 0 as W_a
+				from RelStems1_Particionada_W a
+				where a.idLema1_RealStems1 = idLema2_RealStems1) as k
+				on k.idLema1_RealStems1 = v.idLema1_RealStems1 
+				and k.idLema2_RealStems1 = v.idLema2_RealStems1
+				union all
+				select  * from RelStems1_Particionada_W r where r.idLema1_RealStems1 = idLema1_RealStems1) as sub
+				--group by sub.idlema1, sub.idlema2
+				--order by sub.idlema2
+				) p
+		on k1.idlema2 = p.idlema2
+		group by k1.idlema1, k1.idlema2, p.idlema1,p.idlema2
+		order by k1.idlema2,p.idlema2) as l
+		on RP.idLema1_RealStems1 = 1 and RP.idLema2_RealStems1 = idLema2_RealStems1
+
+GO	
